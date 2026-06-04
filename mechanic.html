@@ -213,8 +213,12 @@ async function submitMechanicForm(e) {
   
   const formData = new FormData(e.target);
 
+  const apiBase = (window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1'))
+    ? 'http://localhost:5000'
+    : (localStorage.getItem('BACKEND_URL') || 'https://roadside-helper-backend.onrender.com');
+
   try {
-    const response = await fetch("http://localhost:5000/api/register-mechanic", {
+    const response = await fetch(`${apiBase}/api/register-mechanic`, {
         method: "POST",
         body: formData
     });

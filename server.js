@@ -24,16 +24,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 
 // ✅ Database Connection with Error Handling
-mongoose.connect('mongodb://127.0.0.1:27017/mechanic')
+const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/mechanic';
+mongoose.connect(mongoURI)
     .then(() => {
         console.log('✅ MongoDB Connected Successfully');
     })
     .catch(error => {
         console.error('❌ MongoDB Connection Failed:', error.message);
-        console.error('Make sure MongoDB is running on localhost:27017');
+        console.error('Make sure MongoDB is running and MONGO_URI is correct');
         // Retry after 5 seconds
         setTimeout(() => {
-            mongoose.connect('mongodb://127.0.0.1:27017/mechanic');
+            mongoose.connect(mongoURI);
         }, 5000);
     });
 

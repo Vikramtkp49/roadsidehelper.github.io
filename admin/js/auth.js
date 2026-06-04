@@ -1,9 +1,11 @@
-// ─── API Configuration ───────────────────────────────────────────────────────
-// Change this URL to your Render deployment URL when deploying
-// e.g., 'https://roadside-helper-api.onrender.com/api'
-const API_BASE = (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') || window.location.protocol === 'file:')
-    ? 'http://localhost:5000/api'
-    : window.location.origin + '/api';
+const getApiBase = () => {
+    if (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') || window.location.protocol === 'file:') {
+        return 'http://localhost:5000/api';
+    }
+    const backend = localStorage.getItem('BACKEND_URL') || 'https://roadside-helper-backend.onrender.com';
+    return backend + '/api';
+};
+const API_BASE = getApiBase();
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');

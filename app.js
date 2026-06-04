@@ -220,8 +220,12 @@ async function submitForm(e) {
   const imageFile = document.getElementById('f-image').files[0];
   if (imageFile) formData.append('image', imageFile);
 
+  const apiBase = (window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1'))
+    ? 'http://localhost:5000'
+    : (localStorage.getItem('BACKEND_URL') || 'https://roadside-helper-backend.onrender.com');
+
   try {
-    const response = await fetch('http://localhost:5000/api/request-assistance', {
+    const response = await fetch(`${apiBase}/api/request-assistance`, {
       method: 'POST',
       body: formData
     });
