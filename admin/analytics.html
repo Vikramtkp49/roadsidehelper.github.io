@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics — Roadside Helper Admin</title>
+    <meta name="description" content="View detailed analytics and trends for the Roadside Helper platform.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <div class="logo">🛠️ Roadside Helper</div>
+        <nav>
+            <a href="dashboard.html" class="nav-item"><span class="icon">📊</span> Dashboard</a>
+            <a href="requests.html" class="nav-item"><span class="icon">📋</span> Requests</a>
+            <a href="mechanics.html" class="nav-item"><span class="icon">👨‍🔧</span> Mechanics</a>
+            <a href="analytics.html" class="nav-item active"><span class="icon">📈</span> Analytics</a>
+        </nav>
+        <div class="sidebar-footer">
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="admin-header">
+            <h1>Analytics</h1>
+            <div class="header-right">
+                <span id="current-time" style="color: var(--text-secondary)"></span>
+                <div class="user-menu">
+                    <span id="admin-name" style="font-weight:500">Admin</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin">
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <!-- KPI Summary Row -->
+            <div class="kpi-grid" id="kpi-row">
+                <div class="kpi-card"><div class="kpi-header"><h3>Total Requests</h3><span>📋</span></div><p class="kpi-value" id="a-total">...</p><p class="kpi-change">All time</p></div>
+                <div class="kpi-card"><div class="kpi-header"><h3>Completed</h3><span>✅</span></div><p class="kpi-value" id="a-completed">...</p><p class="kpi-change">Successfully resolved</p></div>
+                <div class="kpi-card"><div class="kpi-header"><h3>Pending</h3><span>🕐</span></div><p class="kpi-value" id="a-pending">...</p><p class="kpi-change">Awaiting assignment</p></div>
+                <div class="kpi-card"><div class="kpi-header"><h3>Active Mechanics</h3><span>👨‍🔧</span></div><p class="kpi-value" id="a-mechanics">...</p><p class="kpi-change">Approved & ready</p></div>
+            </div>
+
+            <!-- Charts Row 1 -->
+            <div class="charts-grid" style="grid-template-columns: 2fr 1fr;">
+                <div class="chart-container">
+                    <h3>Monthly Request Volume</h3>
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Requests by Status</h3>
+                    <canvas id="statusPieChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Charts Row 2 -->
+            <div class="charts-grid" style="grid-template-columns: 1fr 1fr; margin-top: 0;">
+                <div class="chart-container">
+                    <h3>30-Day Activity</h3>
+                    <canvas id="timelineChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Top 5 Mechanics by Jobs</h3>
+                    <canvas id="topMechanicsChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="js/analytics.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Roadside Helper</title>
+    <meta name="description" content="Admin dashboard for managing the Roadside Helper platform.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+<div class="admin-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="logo">🛠️ Roadside Helper</div>
+        <nav>
+            <a href="dashboard.html" class="nav-item active">
+                <span class="icon">📊</span> Dashboard
+            </a>
+            <a href="requests.html" class="nav-item">
+                <span class="icon">📋</span> Requests
+            </a>
+            <a href="mechanics.html" class="nav-item">
+                <span class="icon">👨‍🔧</span> Mechanics
+            </a>
+            <a href="analytics.html" class="nav-item">
+                <span class="icon">📈</span> Analytics
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="admin-header">
+            <h1>Dashboard Overview</h1>
+            <div class="header-right">
+                <span id="current-time" style="color: var(--text-secondary)"></span>
+                <div class="user-menu">
+                    <span id="admin-name" style="font-weight: 500">Admin</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=3b82f6&color=fff" alt="Admin">
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <section class="content">
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <h3>Today's Requests</h3>
+                        <span class="icon">📋</span>
+                    </div>
+                    <p class="kpi-value" id="today-requests">...</p>
+                    <p class="kpi-change">Active today</p>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <h3>Total Mechanics</h3>
+                        <span class="icon">👨‍🔧</span>
+                    </div>
+                    <p class="kpi-value" id="total-mechanics">...</p>
+                    <p class="kpi-change"><span id="pending-mechanics">...</span> pending approval</p>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <h3>Total Requests</h3>
+                        <span class="icon">✅</span>
+                    </div>
+                    <p class="kpi-value" id="total-requests">...</p>
+                    <p class="kpi-change">All time</p>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <h3>Month Requests</h3>
+                        <span class="icon">📅</span>
+                    </div>
+                    <p class="kpi-value" id="month-requests">...</p>
+                    <p class="kpi-change">This month</p>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3>Requests by Status</h3>
+                    <canvas id="statusChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Last 30 Days (Activity)</h3>
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Requests Table -->
+            <div class="section">
+                <h3>Recent Requests</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Vehicle</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requests-tbody">
+                        <tr><td colspan="6" class="loading-row"><div class="spinner"></div> Loading requests...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>

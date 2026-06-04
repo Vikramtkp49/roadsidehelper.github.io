@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roadside Helper — 24/7 Vehicle Breakdown Assistance</title>
+  <meta name="description" content="Fast, reliable roadside assistance at your fingertips. Get help with breakdowns, towing, jump starts, fuel delivery and more — 24/7.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9OORBuQZ2cpNio5qjMOt8beoNH_bnH3U" async defer></script>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header class="header" id="main-header">
+  <a href="#" class="header-logo">
+    <img src="logo1.png" alt="Roadside Helper Logo" onerror="this.style.display='none'">
+    <span>Roadside</span>Helper
+  </a>
+  <nav class="nav-links" id="nav-links">
+    <a href="#hero">Home</a>
+    <a href="#features">Why Us</a>
+    <a href="#services">Services</a>
+    <a href="mechanic.html">Mechanic</a>
+    <button class="nav-cta" onclick="openModal()">Get Help Now</button>
+  </nav>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge"><span class="dot"></span> Available 24/7</div>
+    <h1>Stuck on the Road?<br>We've Got <span class="highlight">Your Back</span></h1>
+    <p>Fast, reliable, and professional roadside assistance — from flat tires to towing. Help arrives in minutes, not hours.</p>
+    <button class="hero-cta" onclick="openModal()" id="hero-cta-btn">
+      <i class="fas fa-bolt"></i> Get Help Now
+    </button>
+    <div class="hero-stats">
+      <div class="hero-stat"><h3>500+</h3><p>Rescues Completed</p></div>
+      <div class="hero-stat"><h3>24/7</h3><p>Always Available</p></div>
+      <div class="hero-stat"><h3>15 min</h3><p>Avg Response Time</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section class="features" id="features">
+  <div class="section-header">
+    <h2>Why Choose <span style="background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Roadside Helper?</span></h2>
+    <p>We make getting help as simple as pressing a button</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fas fa-tools"></i></div>
+      <h3>Expert Mechanics</h3>
+      <p>Every technician is verified, trained, and equipped to handle any breakdown — big or small.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fas fa-clock"></i></div>
+      <h3>Lightning Fast</h3>
+      <p>Average response time under 15 minutes. No long waits — help is always just around the corner.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fas fa-shield-halved"></i></div>
+      <h3>Safe & Trusted</h3>
+      <p>Your safety is our priority. All service providers are background-checked and insured.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SERVICES ========== -->
+<section class="services" id="services">
+  <div class="section-header">
+    <h2>Our Services</h2>
+    <p>Everything you need when your vehicle lets you down</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-phone-volume"></i></div>
+      <div>
+        <h3>1-on-1 Mechanic Connect</h3>
+        <p>Connect with a verified mechanic in minutes. Get expert guidance or on-site help 24/7.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-road"></i></div>
+      <div>
+        <h3>Roadside Assistance</h3>
+        <p>Broken down? We'll get you back on the road fast — no matter what kind of trouble you're facing.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-truck-pickup"></i></div>
+      <div>
+        <h3>Winching — Vehicle Stuck</h3>
+        <p>Stuck in a ditch, mud, or snow? Our winch-out service pulls you free, 24/7.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-car-battery"></i></div>
+      <div>
+        <h3>Jump Start</h3>
+        <p>Dead battery? We'll test it and jump-start your vehicle on the spot so you can keep going.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-gas-pump"></i></div>
+      <div>
+        <h3>Fuel Delivery</h3>
+        <p>Ran out of gas? We'll bring enough fuel to get you to the nearest station — diesel included.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-wrench"></i></div>
+      <div>
+        <h3>Minor Auto Repairs</h3>
+        <p>On-the-spot fixes for common issues — fluid checks, wire connections, and quick adjustments.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-truck-moving"></i></div>
+      <div>
+        <h3>Towing Service</h3>
+        <p>Need a tow? We arrive faster than average tow services — anywhere in Tamil Nadu, 24/7.</p>
+      </div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><i class="fas fa-plane-departure"></i></div>
+      <div>
+        <h3>Onward Travel</h3>
+        <p>Vehicle can't be fixed today? We help arrange hire cars, transport, or accommodation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="footer-links">
+    <a href="#hero">Home</a>
+    <a href="#features">Why Us</a>
+    <a href="#services">Services</a>
+    <a href="mechanic.html">Mechanic Portal</a>
+  </div>
+  <p>&copy; 2025 Roadside Helper. All Rights Reserved.</p>
+</footer>
+
+<!-- ========== REQUEST ASSISTANCE MODAL ========== -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-panel">
+    <!-- Header -->
+    <div class="modal-header">
+      <h2><i class="fas fa-car-burst" style="color:var(--accent);margin-right:8px;"></i> Request Assistance</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    </div>
+
+    <!-- Step Progress -->
+    <div class="step-progress">
+      <div class="step-dot active" data-step="1"></div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="2"></div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="3"></div>
+    </div>
+
+    <!-- Form Body -->
+    <form id="help-form" onsubmit="submitForm(event)">
+      <div class="modal-body">
+        <!-- Step 1: Personal Info -->
+        <div class="form-step active" id="step-1">
+          <h3><i class="fas fa-user"></i> &nbsp;Tell us about yourself</h3>
+          <div class="form-group">
+            <label for="f-name">Full Name</label>
+            <input type="text" id="f-name" placeholder="e.g. Ravi Kumar" required>
+          </div>
+          <div class="form-group">
+            <label for="f-phone">Phone Number</label>
+            <input type="tel" id="f-phone" placeholder="e.g. 9876543210" required>
+          </div>
+        </div>
+
+        <!-- Step 2: Location & Vehicle -->
+        <div class="form-step" id="step-2">
+          <h3><i class="fas fa-map-marker-alt"></i> &nbsp;Where are you?</h3>
+          <div class="form-group">
+            <label for="f-location">Your Location</label>
+            <div class="location-row">
+              <input type="text" id="f-location" placeholder="Click Detect to find you" readonly required>
+              <button type="button" class="btn-detect" id="btn-detect" onclick="detectLocation()">
+                <i class="fas fa-crosshairs"></i> Detect
+              </button>
+            </div>
+            <div id="modal-map"></div>
+          </div>
+          <div class="form-group">
+            <label for="f-vehicle">Vehicle Type</label>
+            <select id="f-vehicle" required>
+              <option value="">— Select your vehicle —</option>
+              <option value="Bike">🏍️ Bike</option>
+              <option value="Car">🚗 Car</option>
+              <option value="Load Van">🚚 Load Van</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Step 3: Details -->
+        <div class="form-step" id="step-3">
+          <h3><i class="fas fa-clipboard-list"></i> &nbsp;Additional details</h3>
+          <div class="form-group">
+            <label for="f-needs">Describe Your Issue (Optional)</label>
+            <textarea id="f-needs" rows="3" placeholder="e.g. Flat tire on the highway, engine won't start..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Upload a Photo</label>
+            <div class="upload-zone">
+              <i class="fas fa-cloud-arrow-up"></i>
+              <p>Click or drag an image here</p>
+              <small>JPG, PNG, GIF, WebP — max 5 MB</small>
+              <input type="file" id="f-image" accept="image/*" onchange="handleImageUpload(this)">
+            </div>
+            <div class="upload-preview" id="upload-preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions-container" style="padding:0 28px 24px;">
+        <div class="form-actions">
+          <button type="button" class="btn-back" id="btn-back" onclick="prevStep()" style="display:none;">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <button type="button" class="btn-next" id="btn-next" onclick="nextStep()">
+            Next <i class="fas fa-arrow-right"></i>
+          </button>
+          <button type="submit" class="btn-submit" id="btn-submit" style="display:none;">
+            <i class="fas fa-paper-plane"></i> Submit Request
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Success State -->
+    <div class="form-success" id="form-success">
+      <div class="check-circle"><i class="fas fa-check"></i></div>
+      <h3>Help is on the way!</h3>
+      <p>We've received your request. A mechanic will contact you shortly.</p>
+      <button class="btn-done" onclick="closeModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
