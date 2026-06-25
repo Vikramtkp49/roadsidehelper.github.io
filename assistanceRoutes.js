@@ -16,13 +16,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // POST - Save assistance request
-router.post('/request-assistance', upload.single('image'), async (req, res) => {
+router.post('/request-assistance', upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }]), async (req, res) => {
     try {
         const { name, phone, latitude, longitude, vehicle, needs } = req.body;
-        const image = req.file ? req.file.filename : null;
+        const image1 = req.files && req.files.image1 ? req.files.image1[0].filename : null;
+        const image2 = req.files && req.files.image2 ? req.files.image2[0].filename : null;
 
-        if (!name || !phone || !latitude || !longitude || !vehicle || !image) {
-            return res.status(400).json({ message: "All required fields must be provided" });
+        if (!name || !phone || !latitude || !longitude || !vehicle || !image1 || !image2) {
+            return res.status(400).json({ message: "All required fields must be provided, including 2 vehicle images" });
         }
 
         const newRequest = new AssistanceRequest({
@@ -31,7 +32,8 @@ router.post('/request-assistance', upload.single('image'), async (req, res) => {
             location: { latitude, longitude },
             vehicle,
             needs,
-            image
+            image1,
+            image2
         });
 
         await newRequest.save();
@@ -44,13 +46,13 @@ router.post('/request-assistance', upload.single('image'), async (req, res) => {
 
 // POST - Register mechanic from public portal
 const Mechanic = require('./Mechanic');
-router.post('/register-mechanic', upload.single('shop_image'), async (req, res) => {
+router.post('/register-mechanic', upload.array('shop_image', 3), async (req, res) => {
     try {
-        const { name, mobile, address, vehicle_type, specialization } = req.body;
-        const shop_image = req.file ? req.file.filename : null;
+        const { name, mobile, address, pincode, vehicle_type, specialization } = req.body;
+        const shop_images = req.files ? req.files.map(f => f.filename) : [];
 
-        if (!name || !mobile || !address || !vehicle_type || !specialization || !shop_image) {
-            return res.status(400).json({ success: false, message: "All required fields must be provided" });
+        if (!name || !mobile || !address || !pincode || !vehicle_type || !specialization || shop_images.length !== 3) {
+            return res.status(400).json({ success: false, message: "All required fields must be provided, including exactly 3 shop images and a pincode." });
         }
 
         // Check if mechanic already exists by mobile
@@ -69,9 +71,10 @@ router.post('/register-mechanic', upload.single('shop_image'), async (req, res) 
             mobile,
             password: tempPassword,
             address,
+            pincode,
             vehicle_type,
             specialization,
-            shop_image,
+            shop_image: shop_images,
             experience: 1, // Default 1 year
             status: 'pending', // Default to pending admin approval
             rating: 5.0, // Default starting rating

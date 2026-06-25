@@ -7,7 +7,7 @@ const mechanicSchema = new mongoose.Schema({
         required: true,
         trim: true,
         minlength: 2,
-        maxlength: 100
+        maxlength: 15
     },
     email: {
         type: String,
@@ -19,7 +19,7 @@ const mechanicSchema = new mongoose.Schema({
     mobile: { 
         type: String,
         required: true,
-        match: /^[0-9]{10,15}$/,
+        match: /^[0-9]{10}$/,
         unique: true
     },
     password: {
@@ -30,7 +30,13 @@ const mechanicSchema = new mongoose.Schema({
     address: { 
         type: String, 
         required: true,
-        trim: true
+        trim: true,
+        maxlength: 30
+    },
+    pincode: {
+        type: String,
+        required: true,
+        match: /^[0-9]{6}$/
     },
     location: {
         latitude: { 
@@ -54,7 +60,7 @@ const mechanicSchema = new mongoose.Schema({
         required: true
     },
     shop_image: { 
-        type: String, 
+        type: [String], 
         required: true
     },
     // New security fields

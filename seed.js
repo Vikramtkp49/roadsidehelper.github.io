@@ -47,26 +47,25 @@ async function seed() {
         for (let i = 1; i <= 20; i++) {
             const city = randomItem(cities);
             const mobile = `98${randomInt(10000000, 99999999)}`;
-            const mechPass = await bcrypt.hash(`Pass@${mobile}`, 10);
+            const mechPass = `Pass@${mobile}`; // pre-save hook in Mechanic.js will hash it
+            const email = `mechanic-${mobile}@roadside.com`.toLowerCase();
             mechanicDocs.push({
                 name: `Mechanic ${i}`,
-                email: `mechanic${i}@example.com`,
+                email: email,
                 mobile: mobile,
                 password: mechPass,
                 address: `${randomInt(1, 99)} Main Road, ${city}`,
+                pincode: `6000${randomInt(10, 99)}`,
                 location: { 
                     latitude: 13.0827 + (Math.random() - 0.5) * 0.1, 
                     longitude: 80.2707 + (Math.random() - 0.5) * 0.1 
                 },
                 vehicle_type: i % 3 === 0 ? 'Bike' : i % 3 === 1 ? 'Car' : 'Both',
                 specialization: randomItem(skills),
-                shop_image: 'default-shop.jpg',
+                shop_image: ['default-shop.jpg', 'default-shop.jpg', 'default-shop.jpg'],
                 isVerified: i <= 14,
                 isBlocked: i === 20,
                 backgroundCheckStatus: i <= 12 ? 'verified' : i <= 16 ? 'pending' : 'rejected',
-                rating: parseFloat((Math.random() * 2 + 3).toFixed(1)),
-                totalJobs: randomInt(10, 120),
-                experience: randomInt(1, 15),
                 skills: [randomItem(skills), randomItem(skills)].filter((v, idx, a) => a.indexOf(v) === idx)
             });
         }

@@ -46,15 +46,19 @@
              <h3><i class="fas fa-id-card" style="color:var(--accent)"></i> Personal Details</h3>
              <div class="form-group">
                 <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" required placeholder="e.g. Ravi Kumar">
+                <input type="text" id="name" name="name" required placeholder="e.g. Ravi Kumar" maxlength="15">
              </div>
              <div class="form-group">
                 <label for="mobile">Mobile Number</label>
-                <input type="tel" id="mobile" name="mobile" required placeholder="e.g. 9876543210" pattern="[0-9]{10,15}">
+                <input type="tel" id="mobile" name="mobile" required placeholder="e.g. 9876543210" pattern="[0-9]{10}" minlength="10" maxlength="10">
              </div>
              <div class="form-group">
                 <label for="address">Shop Address</label>
-                <input type="text" id="address" name="address" required placeholder="e.g. 123 Main St, Chennai">
+                <input type="text" id="address" name="address" required placeholder="e.g. 123 Main St, Chennai" maxlength="30">
+             </div>
+             <div class="form-group">
+                <label for="pincode">Pincode</label>
+                <input type="text" id="pincode" name="pincode" required placeholder="e.g. 600001" pattern="[0-9]{6}" minlength="6" maxlength="6" inputmode="numeric" title="Please enter a 6-digit pincode">
              </div>
              <div class="form-group">
                 <label for="vehicle_type">Mechanic Type</label>
@@ -77,14 +81,19 @@
            <div class="form-col">
              <h3><i class="fas fa-store" style="color:var(--accent)"></i> Shop Verification</h3>
              <div class="form-group">
-                <label>Shop Image (Banner)</label>
+                <label>Shop Images (exactly 3 required)</label>
                 <div class="upload-zone" id="mech-upload-zone">
                   <i class="fas fa-cloud-arrow-up"></i>
-                  <p>Click or drag shop photo here</p>
-                  <small>JPG, PNG, WebP — max 5 MB</small>
-                  <input type="file" id="shop-image" name="shop_image" accept="image/*" required onchange="handleMechImageUpload(this)">
+                  <p>Click or drag 3 shop photos here</p>
+                  <small>JPG, PNG, WebP — max 5 MB per image</small>
+                  <input type="file" id="shop-image" name="shop_image" accept="image/*" multiple required onchange="handleMechImageUpload(this)">
                 </div>
-                <div class="upload-preview" id="mech-upload-preview"></div>
+                <div style="text-align: center; margin-top: 12px; margin-bottom: 8px;">
+                  <button type="button" class="btn-submit" onclick="openCameraModal()" style="width: auto; padding: 8px 16px; font-size: 14px; background: var(--bg-glass); border: 1px solid var(--accent); color: var(--accent); cursor: pointer; border-radius: 6px;">
+                    <i class="fas fa-camera"></i> Take Photos with Camera
+                  </button>
+                </div>
+                <div class="upload-preview" id="mech-upload-preview" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;"></div>
              </div>
              
              <div class="terms-container">
@@ -122,6 +131,34 @@
     </div>
   </div>
 </section>
+
+<!-- ========== CAMERA MODAL ========== -->
+<div class="modal-overlay" id="camera-modal">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <h2>Take Shop Photos</h2>
+      <button type="button" class="modal-close" onclick="closeCameraModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" style="text-align: center;">
+      <div id="camera-container" style="position: relative; width: 100%; aspect-ratio: 4/3; background: #000; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px;">
+        <video id="camera-preview" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+        <div id="camera-overlay-text" style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 500; color: #fff;">
+          Photo <span id="photo-index">1</span> of 3
+        </div>
+      </div>
+      
+      <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 20px;">
+        <button type="button" class="btn-submit" id="btn-capture-photo" onclick="capturePhoto()" style="width: auto; padding: 10px 24px;">
+          <i class="fas fa-camera"></i> Capture Photo
+        </button>
+      </div>
+
+      <div id="captured-thumbnails" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
+        <!-- Preview of captured images -->
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ========== FOOTER ========== -->
 <footer class="footer">
@@ -189,19 +226,57 @@ function updateSpecializations() {
 function handleMechImageUpload(input) {
   const preview = document.getElementById('mech-upload-preview');
   const zone = document.getElementById('mech-upload-zone');
-  if (!input.files || !input.files[0]) return;
-  const file = input.files[0];
+  preview.innerHTML = '';
+  
+  if (!input.files || input.files.length === 0) {
+    zone.querySelector('p').textContent = 'Click or drag 3 shop photos here';
+    return;
+  }
+  
+  if (input.files.length !== 3) {
+    alert('Please select exactly 3 images.');
+    input.value = '';
+    zone.querySelector('p').textContent = 'Click or drag 3 shop photos here';
+    return;
+  }
 
   const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-  if (!allowed.includes(file.type)) { alert('Invalid format. Use JPG, PNG, GIF, or WebP'); input.value = ''; return; }
-  if (file.size > 5 * 1024 * 1024) { alert('Image must be under 5MB'); input.value = ''; return; }
+  
+  for (let i = 0; i < input.files.length; i++) {
+    const file = input.files[i];
+    if (!allowed.includes(file.type)) {
+      alert(`Invalid format for ${file.name}. Use JPG, PNG, GIF, or WebP`);
+      input.value = '';
+      preview.innerHTML = '';
+      zone.querySelector('p').textContent = 'Click or drag 3 shop photos here';
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert(`Image ${file.name} must be under 5MB`);
+      input.value = '';
+      preview.innerHTML = '';
+      zone.querySelector('p').textContent = 'Click or drag 3 shop photos here';
+      return;
+    }
+  }
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-height:140px; border-radius:8px; border:1px solid var(--border-glass); margin-top:12px;">`;
-    zone.querySelector('p').textContent = file.name;
-  };
-  reader.readAsDataURL(file);
+  zone.querySelector('p').textContent = `${input.files.length} images selected`;
+
+  for (let i = 0; i < input.files.length; i++) {
+    const file = input.files[i];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.alt = `Preview ${i + 1}`;
+      img.style.maxHeight = '90px';
+      img.style.borderRadius = '8px';
+      img.style.border = '1px solid var(--border-glass)';
+      img.style.marginTop = '12px';
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
 }
 
 async function submitMechanicForm(e) {
@@ -242,6 +317,89 @@ async function submitMechanicForm(e) {
     document.getElementById('mechanic-form').style.display = 'none';
     document.getElementById('mechanic-success').classList.add('active');
   }
+}
+// Camera Capture logic
+let activeStream = null;
+let capturedBlobs = [];
+
+function openCameraModal() {
+  const modal = document.getElementById('camera-modal');
+  const video = document.getElementById('camera-preview');
+  capturedBlobs = [];
+  document.getElementById('captured-thumbnails').innerHTML = '';
+  document.getElementById('photo-index').textContent = '1';
+  document.getElementById('btn-capture-photo').disabled = false;
+  document.getElementById('btn-capture-photo').innerHTML = '<i class="fas fa-camera"></i> Capture Photo';
+
+  modal.classList.add('active');
+
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then(stream => {
+      activeStream = stream;
+      video.srcObject = stream;
+    })
+    .catch(err => {
+      console.error("Camera access error:", err);
+      alert("Unable to access camera. Please check permissions or upload photos instead.");
+      closeCameraModal();
+    });
+}
+
+function closeCameraModal() {
+  const modal = document.getElementById('camera-modal');
+  modal.classList.remove('active');
+  if (activeStream) {
+    activeStream.getTracks().forEach(track => track.stop());
+    activeStream = null;
+  }
+}
+
+function capturePhoto() {
+  const video = document.getElementById('camera-preview');
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+  
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+  canvas.toBlob(blob => {
+    capturedBlobs.push(blob);
+    
+    // Add thumbnail
+    const thumb = document.createElement('img');
+    thumb.src = URL.createObjectURL(blob);
+    thumb.style.width = '60px';
+    thumb.style.height = '45px';
+    thumb.style.objectFit = 'cover';
+    thumb.style.borderRadius = '4px';
+    thumb.style.border = '2px solid var(--accent)';
+    document.getElementById('captured-thumbnails').appendChild(thumb);
+    
+    if (capturedBlobs.length < 3) {
+      document.getElementById('photo-index').textContent = capturedBlobs.length + 1;
+    } else {
+      // Completed capturing 3 images
+      document.getElementById('btn-capture-photo').disabled = true;
+      document.getElementById('btn-capture-photo').textContent = 'Done!';
+      
+      // Assign captured files to input element
+      const fileInput = document.getElementById('shop-image');
+      const dt = new DataTransfer();
+      capturedBlobs.forEach((b, idx) => {
+        dt.items.add(new File([b], `shop-camera-${idx + 1}.jpg`, { type: 'image/jpeg' }));
+      });
+      fileInput.files = dt.files;
+      
+      // Update form preview
+      handleMechImageUpload(fileInput);
+      
+      // Wait a moment for visual feedback, then close
+      setTimeout(() => {
+        closeCameraModal();
+      }, 800);
+    }
+  }, 'image/jpeg', 0.85);
 }
 </script>
 </body>

@@ -287,7 +287,7 @@ router.get('/admin/mechanics', authenticateToken, authorizeRole('admin', 'super_
                 status: statusVal,
                 rating: m.rating || 5.0,
                 totalJobs: m.totalJobs || 0,
-                profileImage: m.shop_image || 'default-shop.jpg'
+                profileImage: Array.isArray(m.shop_image) ? (m.shop_image[0] || 'default-shop.jpg') : (m.shop_image || 'default-shop.jpg')
             };
         });
 

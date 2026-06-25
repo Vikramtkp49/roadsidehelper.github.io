@@ -177,11 +177,11 @@
           <h3><i class="fas fa-user"></i> &nbsp;Tell us about yourself</h3>
           <div class="form-group">
             <label for="f-name">Full Name</label>
-            <input type="text" id="f-name" placeholder="e.g. Ravi Kumar" required>
+            <input type="text" id="f-name" placeholder="e.g. Ravi Kumar" maxlength="20" required>
           </div>
           <div class="form-group">
             <label for="f-phone">Phone Number</label>
-            <input type="tel" id="f-phone" placeholder="e.g. 9876543210" required>
+            <input type="tel" id="f-phone" placeholder="e.g. 9876543210" maxlength="10" required>
           </div>
         </div>
 
@@ -217,14 +217,22 @@
             <textarea id="f-needs" rows="3" placeholder="e.g. Flat tire on the highway, engine won't start..."></textarea>
           </div>
           <div class="form-group">
-            <label>Upload a Photo</label>
-            <div class="upload-zone">
-              <i class="fas fa-cloud-arrow-up"></i>
-              <p>Click or drag an image here</p>
-              <small>JPG, PNG, GIF, WebP — max 5 MB</small>
-              <input type="file" id="f-image" accept="image/*" onchange="handleImageUpload(this)">
+            <label>Upload 2 Vehicle Photos (Capture or Select)</label>
+            <p style="font-size: 11px; color: #8a8f98; margin-bottom: 8px;">Note: Mobile users will be prompted to open the camera directly.</p>
+            <div class="upload-row-dual" style="display: flex; gap: 15px; margin-top: 10px;">
+              <div class="upload-zone" style="flex: 1; padding: 15px; text-align: center; position: relative;">
+                <i class="fas fa-camera"></i>
+                <p style="font-size: 12px; margin: 5px 0;">Photo 1</p>
+                <input type="file" id="f-image1" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'preview1')">
+                <div class="upload-preview" id="preview1" style="margin-top: 10px; position: relative;"></div>
+              </div>
+              <div class="upload-zone" style="flex: 1; padding: 15px; text-align: center; position: relative;">
+                <i class="fas fa-camera"></i>
+                <p style="font-size: 12px; margin: 5px 0;">Photo 2</p>
+                <input type="file" id="f-image2" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'preview2')">
+                <div class="upload-preview" id="preview2" style="margin-top: 10px; position: relative;"></div>
+              </div>
             </div>
-            <div class="upload-preview" id="upload-preview"></div>
           </div>
         </div>
       </div>

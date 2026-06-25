@@ -12,7 +12,7 @@ const assistanceRequestSchema = new mongoose.Schema({
         type: String,  // ✅ FIX: Changed from 'number' to 'String'
         required: true,
         trim: true,
-        match: /^[0-9]{10,15}$/  // Add phone validation regex
+        match: /^[0-9]{10}$/  // Add phone validation regex for exactly 10 digits
     },
     location: {
         latitude: { 
@@ -37,7 +37,11 @@ const assistanceRequestSchema = new mongoose.Schema({
         type: String,
         maxlength: 500
     },
-    image: { 
+    image1: { 
+        type: String, 
+        required: true
+    },
+    image2: { 
         type: String, 
         required: true
     },

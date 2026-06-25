@@ -63,8 +63,10 @@ function resetForm() {
   document.querySelector('.modal-body').style.display = '';
   document.querySelector('.step-progress').style.display = '';
   document.querySelector('.form-actions-container').style.display = '';
-  const preview = document.getElementById('upload-preview');
-  if (preview) preview.innerHTML = '';
+  const preview1 = document.getElementById('preview1');
+  const preview2 = document.getElementById('preview2');
+  if (preview1) preview1.innerHTML = '';
+  if (preview2) preview2.innerHTML = '';
   updateStep();
 }
 
@@ -99,7 +101,8 @@ function validateCurrentStep() {
     const name = document.getElementById('f-name').value.trim();
     const phone = document.getElementById('f-phone').value.trim();
     if (!name || name.length < 2) { showToast('Please enter your name (min 2 characters)', 'error'); return false; }
-    if (!phone || !/^[0-9]{10,15}$/.test(phone)) { showToast('Please enter a valid phone number (10-15 digits)', 'error'); return false; }
+    if (name.length > 20) { showToast('Name cannot exceed 20 characters', 'error'); return false; }
+    if (!phone || !/^[0-9]{10}$/.test(phone)) { showToast('Please enter a valid 10-digit phone number', 'error'); return false; }
     return true;
   }
   if (currentStep === 2) {
@@ -107,6 +110,12 @@ function validateCurrentStep() {
     const vehicle = document.getElementById('f-vehicle').value;
     if (!loc) { showToast('Please detect your location first', 'error'); return false; }
     if (!vehicle) { showToast('Please select your vehicle type', 'error'); return false; }
+    return true;
+  }
+  if (currentStep === 3) {
+    const img1 = document.getElementById('f-image1').files[0];
+    const img2 = document.getElementById('f-image2').files[0];
+    if (!img1 || !img2) { showToast('Please upload/take 2 different photos of the vehicle', 'error'); return false; }
     return true;
   }
   return true;
@@ -167,9 +176,9 @@ function detectLocation() {
 }
 
 // ---- Image upload preview ----
-function handleImageUpload(input) {
-  const preview = document.getElementById('upload-preview');
-  const zone = document.querySelector('.upload-zone');
+function handleImageUpload(input, previewId) {
+  const preview = document.getElementById(previewId);
+  const zone = input.parentElement;
   if (!input.files || !input.files[0]) return;
   const file = input.files[0];
 
@@ -179,26 +188,42 @@ function handleImageUpload(input) {
 
   const reader = new FileReader();
   reader.onload = (e) => {
-    preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-    zone.querySelector('p').textContent = file.name;
+    preview.innerHTML = `
+      <div style="position: relative; display: inline-block; width: 100%;">
+        <img src="${e.target.result}" alt="Preview" style="max-width:100%; max-height:80px; border-radius:6px; display: block; margin: 0 auto;">
+        <button type="button" onclick="removeImage('${input.id}', '${previewId}', event)" style="position: absolute; top: 0; right: 0; background: #333; color: #fff; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; padding: 0; line-height: 1;">
+          ✕
+        </button>
+      </div>
+    `;
+    if (zone.querySelector('p')) {
+      zone.querySelector('p').textContent = file.name.substring(0, 15) + '...';
+    }
   };
   reader.readAsDataURL(file);
 }
 
-// ---- Drag and drop ----
-document.addEventListener('DOMContentLoaded', () => {
-  const zone = document.querySelector('.upload-zone');
-  if (!zone) return;
-  ['dragenter', 'dragover'].forEach(ev => zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.add('dragover'); }));
-  ['dragleave', 'drop'].forEach(ev => zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.remove('dragover'); }));
-  zone.addEventListener('drop', (e) => {
-    const fileInput = document.getElementById('f-image');
-    if (e.dataTransfer.files.length) {
-      fileInput.files = e.dataTransfer.files;
-      handleImageUpload(fileInput);
+function removeImage(inputId, previewId, event) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (input) {
+    input.value = '';
+    const zone = input.parentElement;
+    if (zone && zone.querySelector('p')) {
+      const isFirst = inputId.endsWith('1');
+      zone.querySelector('p').textContent = isFirst ? 'Photo 1' : 'Photo 2';
     }
-  });
-});
+  }
+  if (preview) {
+    preview.innerHTML = '';
+  }
+}
+
+// ---- Drag and drop removed or updated for dual file inputs if needed ----
 
 // ---- Form submission ----
 async function submitForm(e) {
@@ -217,8 +242,10 @@ async function submitForm(e) {
   formData.append('vehicle', document.getElementById('f-vehicle').value);
   formData.append('needs', document.getElementById('f-needs').value.trim());
 
-  const imageFile = document.getElementById('f-image').files[0];
-  if (imageFile) formData.append('image', imageFile);
+  const imgFile1 = document.getElementById('f-image1').files[0];
+  const imgFile2 = document.getElementById('f-image2').files[0];
+  if (imgFile1) formData.append('image1', imgFile1);
+  if (imgFile2) formData.append('image2', imgFile2);
 
   const apiBase = (window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1'))
     ? 'http://localhost:5000'
