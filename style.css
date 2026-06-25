@@ -43,7 +43,7 @@ img { max-width: 100%; display: block; }
   position: fixed; top:0; left:0; right:0; z-index:100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 5%;
-  background: rgba(10,10,16,0.7);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--border-glass);
   transition: var(--transition);
@@ -54,7 +54,7 @@ img { max-width: 100%; display: block; }
   font-family: var(--font-heading); font-size: 22px; font-weight: 700;
   color: var(--text-primary);
 }
-.header-logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+.header-logo img { height: 40px; width: auto; }
 .header-logo span { background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .nav-links { display: flex; gap: 28px; align-items: center; }
 .nav-links a {
