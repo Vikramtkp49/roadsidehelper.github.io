@@ -249,7 +249,7 @@ async function submitForm(e) {
 
   const apiBase = (window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1'))
     ? 'http://localhost:5000'
-    : (localStorage.getItem('BACKEND_URL') || 'https://roadside-helper-backend.onrender.com');
+    : (localStorage.getItem('BACKEND_URL') || 'https://roadside-helper-tc7q.onrender.com');
 
   try {
     const response = await fetch(`${apiBase}/api/request-assistance`, {
