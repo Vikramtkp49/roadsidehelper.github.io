@@ -80,6 +80,10 @@ async function loadRecentRequests() {
             return;
         }
 
+        // Store for modal lookup
+        window._dashRequests = {};
+        result.data.forEach(req => { window._dashRequests[req._id] = req; });
+
         tbody.innerHTML = result.data.map(req => `
             <tr>
                 <td>${req._id.substring(0, 8)}...</td>
@@ -87,7 +91,7 @@ async function loadRecentRequests() {
                 <td>${req.vehicle}</td>
                 <td><span class="badge badge-${req.status.toLowerCase()}">${req.status}</span></td>
                 <td>${new Date(req.createdAt).toLocaleDateString()}</td>
-                <td><a href="#" style="color: var(--primary-color);">View</a></td>
+                <td><a href="#" style="color: var(--primary-color);" onclick="openRequestModal('${req._id}'); return false;">View</a></td>
             </tr>
         `).join('');
     } catch (error) {
@@ -177,6 +181,41 @@ async function loadCharts(data) {
     } catch (e) {
         console.error("Timeline chart error:", e);
     }
+}
+
+function openRequestModal(id) {
+    const req = window._dashRequests && window._dashRequests[id];
+    if (!req) return;
+
+    // Badge
+    const badge = document.getElementById('req-modal-badge');
+    badge.className = `badge badge-${req.status.toLowerCase()}`;
+    badge.textContent = req.status.charAt(0).toUpperCase() + req.status.slice(1);
+
+    // Detail rows
+    const details = [
+        ['🆔 Request ID',  req._id],
+        ['👤 Customer',    req.name],
+        ['📞 Phone',       req.phone || '—'],
+        ['🚗 Vehicle',     `${req.vehicle}${req.vehicleModel ? ' — ' + req.vehicleModel : ''}`],
+        ['🔧 Problem',     req.problem || '—'],
+        ['📍 Location',    req.location?.address ? `${req.location.address}, ${req.location.city || ''}` : (req.location?.city || '—')],
+        ['📅 Created',     new Date(req.createdAt).toLocaleString()],
+        ['👨‍🔧 Assigned To', req.mechanic ? (req.mechanic.name || req.mechanic) : 'Not assigned yet'],
+    ];
+
+    document.getElementById('req-modal-details').innerHTML = details.map(([label, value]) => `
+        <div class="detail-row">
+            <span>${label}</span>
+            <span style="font-weight:500; max-width:60%; text-align:right; word-break:break-word;">${value}</span>
+        </div>
+    `).join('');
+
+    document.getElementById('requestDetailModal').style.display = 'flex';
+}
+
+function closeRequestModal() {
+    document.getElementById('requestDetailModal').style.display = 'none';
 }
 
 function logout() {
