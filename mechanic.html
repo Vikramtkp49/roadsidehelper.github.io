@@ -482,7 +482,11 @@ async function submitMechanicForm(e) {
         document.getElementById('mechanic-form').style.display = 'none';
         document.getElementById('mechanic-success').classList.add('active');
     } else {
-        alert("Registration failed: " + (result.message || "Unknown error"));
+        let errStr = result.message || "Unknown error";
+        if (result.errors && Array.isArray(result.errors) && result.errors.length > 0) {
+            errStr += ":\n• " + result.errors.map(e => e.message).join("\n• ");
+        }
+        alert("Registration failed: " + errStr);
         submitBtn.classList.remove('loading');
         submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Submit Registration';
     }

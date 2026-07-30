@@ -39,8 +39,8 @@ exports.validateMechanicRegistration = [
         .trim()
         .isLength({ min: 2, max: 15 })
         .withMessage('Name must be 2–15 characters')
-        .matches(/^[a-zA-Z\s]+$/)
-        .withMessage('Name must contain only letters and spaces'),
+        .matches(/^[a-zA-Z\s\.\'-]+$/)
+        .withMessage('Name must contain only valid letters and spaces'),
 
     body('mobile')
         .trim()
@@ -49,8 +49,8 @@ exports.validateMechanicRegistration = [
 
     body('address')
         .trim()
-        .isLength({ min: 5, max: 30 })
-        .withMessage('Address must be 5–30 characters'),
+        .isLength({ min: 5, max: 40 })
+        .withMessage('Address must be 5–40 characters'),
 
     body('pincode')
         .trim()

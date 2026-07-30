@@ -136,17 +136,19 @@ function openMechanicModal(id) {
     badge.textContent = capitalize(m.status);
 
     const actions = document.getElementById('modal-actions');
+    let actionsHtml = `<button class="modal-close" onclick="closeMechanicModal()">Close</button>`;
     if (m.status === 'pending') {
-        actions.innerHTML = `
+        actionsHtml += `
             <button class="approve-btn" onclick="approveMechanic('${m._id}'); closeMechanicModal();">✅ Approve</button>
             <button class="reject-btn" onclick="rejectMechanic('${m._id}'); closeMechanicModal();">❌ Reject</button>
         `;
     } else if (m.status === 'approved') {
-        actions.innerHTML = `<button class="reject-btn" onclick="rejectMechanic('${m._id}'); closeMechanicModal();">🚫 Revoke Approval</button>`;
+        actionsHtml += `<button class="reject-btn" onclick="rejectMechanic('${m._id}'); closeMechanicModal();">🚫 Revoke Approval</button>`;
     } else {
-        actions.innerHTML = `<button class="approve-btn" onclick="approveMechanic('${m._id}'); closeMechanicModal();">✅ Approve</button>`;
+        actionsHtml += `<button class="approve-btn" onclick="approveMechanic('${m._id}'); closeMechanicModal();">✅ Approve</button>`;
     }
-    actions.innerHTML += `<button class="delete-btn" onclick="deleteMechanic('${m._id}'); closeMechanicModal();">🗑️ Delete</button>`;
+    actionsHtml += `<button class="delete-btn" onclick="deleteMechanic('${m._id}'); closeMechanicModal();">🗑️ Delete</button>`;
+    actions.innerHTML = actionsHtml;
 
     document.getElementById('mechanicModal').style.display = 'flex';
 }
