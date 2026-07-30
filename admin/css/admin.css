@@ -2236,13 +2236,19 @@ body {
 
     .main-content {
         margin-left: 0;
-        padding: 76px 16px 24px;
+        padding: 68px 12px 24px;
     }
 
     .admin-header {
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
         align-items: flex-start;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+    }
+
+    .header-left h1 {
+        font-size: 1.4rem;
     }
 
     .header-right {
@@ -2253,34 +2259,58 @@ body {
     .toolbar {
         flex-direction: column;
         align-items: stretch;
+        gap: 12px;
     }
 
     .toolbar-left,
     .toolbar-right {
         width: 100%;
+        flex-wrap: wrap;
     }
 
     .search-box {
         max-width: none;
+        width: 100%;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .filter-tabs {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        max-width: 100%;
+        padding: 4px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .filter-tab {
+        flex-shrink: 0;
     }
 
     .kpi-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
         margin-bottom: 20px;
     }
 
     .kpi-card {
-        padding: 0;
+        padding: 14px 16px;
+        min-height: 90px;
     }
 
     .kpi-value {
-        font-size: 1.3rem;
+        font-size: 1.25rem;
     }
 
+    .kpi-left h3,
     .kpi-header h3 {
-        font-size: 0.65rem;
+        font-size: 0.8rem;
     }
 
     /* Card-based table on mobile */
@@ -2290,7 +2320,7 @@ body {
 
     .data-table tbody tr {
         display: block;
-        padding: 16px;
+        padding: 14px 16px;
         border-bottom: 1px solid var(--border-color);
         position: relative;
     }
@@ -2306,6 +2336,7 @@ body {
         padding: 8px 0;
         border-bottom: 1px solid var(--border-light);
         font-size: 0.85rem;
+        word-break: break-word;
     }
 
     .data-table td:last-child {
@@ -2319,12 +2350,14 @@ body {
         font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.3px;
+        margin-right: 12px;
+        flex-shrink: 0;
     }
 
     .data-table td.col-select {
         position: absolute;
-        top: 16px;
-        left: 16px;
+        top: 14px;
+        left: 14px;
         padding: 0;
         border: none;
     }
@@ -2334,7 +2367,7 @@ body {
     }
 
     .data-table td.col-admin {
-        padding-left: 36px;
+        padding-left: 32px;
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
@@ -2347,7 +2380,7 @@ body {
     .data-table td.col-actions {
         justify-content: flex-end;
         margin-top: 8px;
-        padding-top: 12px;
+        padding-top: 10px;
         border-top: 1px solid var(--border-color);
     }
 
@@ -2363,16 +2396,24 @@ body {
         flex-direction: column;
         align-items: center;
         gap: 12px;
+        padding: 14px 16px;
+    }
+
+    .modal-overlay {
+        padding: 16px 12px;
     }
 
     .modal-card {
-        max-height: 90vh;
+        width: calc(100% - 16px);
+        max-width: 100%;
+        max-height: 88vh;
         overflow-y: auto;
         border-radius: var(--radius-lg);
     }
 
     .form-grid {
-        padding: 20px;
+        grid-template-columns: 1fr;
+        padding: 16px 20px;
     }
 
     .permissions-section {
@@ -2380,7 +2421,7 @@ body {
     }
 
     .modal-actions {
-        padding: 0 20px 20px;
+        padding: 14px 20px 16px;
     }
 
     .modal-error {
@@ -2400,6 +2441,10 @@ body {
 
     .modal-detail-actions {
         flex-direction: column;
+    }
+
+    .main-content {
+        padding: 64px 8px 20px;
     }
 }
 
