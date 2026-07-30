@@ -120,12 +120,15 @@ function openMechanicModal(id) {
 
     document.getElementById('modal-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=${statusColor(m.status)}&color=fff&size=80`;
     document.getElementById('modal-name').textContent = m.name;
-    document.getElementById('modal-location').textContent = `${m.location?.address || ''} ${m.location?.city || ''}`;
+    document.getElementById('modal-location').textContent = `${m.location?.address || ''} ${m.location?.city || ''}`.trim();
     document.getElementById('modal-phone').textContent = m.phone;
-    document.getElementById('modal-email').textContent = m.email;
-    document.getElementById('modal-rating').textContent = `⭐ ${m.rating.toFixed(1)}`;
+    document.getElementById('modal-pincode').textContent = m.location?.pincode || '—';
     document.getElementById('modal-jobs').textContent = m.totalJobs;
-    document.getElementById('modal-exp').textContent = `${m.experience} years`;
+
+    // Show vehicleType from server; fall back to 'Not specified' if missing
+    document.getElementById('modal-vehicle-type').textContent =
+        (m.vehicleType && m.vehicleType !== '—') ? m.vehicleType : 'Not specified';
+
     document.getElementById('modal-skills').textContent = m.skills.join(', ');
 
     const badge = document.getElementById('modal-status-badge');

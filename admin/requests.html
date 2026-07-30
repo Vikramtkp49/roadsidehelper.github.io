@@ -4,9 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Requests — Roadside Helper Admin</title>
+    <link rel="icon" type="image/png" href="../logo.png">
     <meta name="description" content="Manage all roadside service requests in the Roadside Helper admin panel.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
+    
+    <style>
+        /* ── match badge ── */
+        .match-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 10px; font-weight: 600; padding: 2px 7px;
+            border-radius: 20px; white-space: nowrap;
+        }
+        .match-badge.pincode { background: #d1fae5; color: #065f46; }
+        .match-badge.radius  { background: #dbeafe; color: #1e40af; }
+        .match-badge.manual  { background: #ede9fe; color: #5b21b6; }
+        .match-badge.none    { background: #f1f5f9; color: #64748b; }
+
+        /* ── mechanic cell ── */
+        .mechanic-cell { min-width: 140px; }
+        .mechanic-cell .mech-name { font-weight: 600; font-size: 0.85rem; color: var(--brand-primary); }
+        .mechanic-cell .mech-phone { font-size: 0.75rem; color: var(--text-secondary); }
+        .mechanic-cell .mech-unassigned { font-size: 0.8rem; color: var(--text-secondary); font-style: italic; }
+
+        /* ── rematch btn ── */
+        .rematch-btn {
+            background: transparent;
+            border: 1px solid var(--brand-accent);
+            color: var(--brand-primary);
+            border-radius: 5px;
+            padding: 4px 8px;
+            font-size: 11px; font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            width: auto;
+            white-space: nowrap;
+        }
+        .rematch-btn:hover { background: var(--brand-accent); color: var(--bg-sidebar); }
+        .rematch-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ── action group & cells ── */
+.action-group {
+    display: flex;
+    flex-direction: column;   /* stack vertically */
+    align-items: flex-start;    /* keep them left-aligned in the cell */
+    gap: 2px;                 /* tiny breathing room, or use 0 for none */
+}
+.action-group .action-btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    width: auto;
+    white-space: nowrap;
+}
+    </style>
 </head>
 <body>
 <div class="admin-container">
@@ -17,6 +70,7 @@
             <a href="requests.html" class="nav-item active"><span class="icon">📋</span> Requests</a>
             <a href="mechanics.html" class="nav-item"><span class="icon">👨‍🔧</span> Mechanics</a>
             <a href="analytics.html" class="nav-item"><span class="icon">📈</span> Analytics</a>
+            <a href="admins.html" class="nav-item"><span class="icon">🛡️</span> Admins</a>
         </nav>
         <div class="sidebar-footer">
             <button onclick="logout()" class="logout-btn">Logout</button>
@@ -43,11 +97,11 @@
                     <input type="text" id="searchInput" placeholder="Search by name, vehicle or phone..." oninput="debounceSearch()">
                 </div>
                 <div class="filter-tabs" id="statusTabs">
-                    <button class="filter-tab active" data-status="all" onclick="setStatus(this)">All</button>
-                    <button class="filter-tab" data-status="pending" onclick="setStatus(this)">Pending</button>
-                    <button class="filter-tab" data-status="assigned" onclick="setStatus(this)">Assigned</button>
-                    <button class="filter-tab" data-status="completed" onclick="setStatus(this)">Completed</button>
-                    <button class="filter-tab" data-status="cancelled" onclick="setStatus(this)">Cancelled</button>
+                    <button class="filter-tab active" data-status="all"       onclick="setStatus(this)">All</button>
+                    <button class="filter-tab"        data-status="pending"   onclick="setStatus(this)">Pending</button>
+                    <button class="filter-tab"        data-status="assigned"  onclick="setStatus(this)">Assigned</button>
+                    <button class="filter-tab"        data-status="completed" onclick="setStatus(this)">Completed</button>
+                    <button class="filter-tab"        data-status="cancelled" onclick="setStatus(this)">Cancelled</button>
                 </div>
             </div>
 
@@ -56,23 +110,26 @@
                 <div class="table-header">
                     <h3>Requests <span id="total-label" class="count-badge"></span></h3>
                 </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Customer</th>
-                            <th>Vehicle</th>
-                            <th>Problem</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="requests-tbody">
-                        <tr><td colspan="8" class="loading-row"><div class="spinner"></div> Loading...</td></tr>
-                    </tbody>
-                </table>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th>Problem</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Assigned Mechanic</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requests-tbody">
+                            <tr><td colspan="9" class="loading-row"><div class="spinner"></div> Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <!-- Pagination -->
                 <div class="pagination" id="pagination"></div>
@@ -82,20 +139,49 @@
 </div>
 
 <!-- Status Update Modal -->
-<div id="statusModal" class="modal-overlay" style="display:none">
-    <div class="modal-card">
-        <h3>Update Request Status</h3>
-        <p style="color:var(--text-secondary); margin-bottom:20px" id="modal-req-info"></p>
-        <div class="modal-options">
-            <button class="status-btn pending" onclick="updateStatus('pending')">🕐 Pending</button>
-            <button class="status-btn assigned" onclick="updateStatus('assigned')">🔧 Assigned</button>
-            <button class="status-btn completed" onclick="updateStatus('completed')">✅ Completed</button>
-            <button class="status-btn cancelled" onclick="updateStatus('cancelled')">❌ Cancelled</button>
+<div id="statusModal" class="modal-overlay" style="display:none" onclick="if(event.target===this) closeModal()">
+    <div class="modal-card status-modal">
+        <div class="status-modal-header">
+            <div class="status-modal-icon">📝</div>
+            <div>
+                <h3>Update Request Status</h3>
+                <p id="modal-req-info">Updating status for: vikram</p>
+            </div>
         </div>
-        <button class="modal-close" onclick="closeModal()">Cancel</button>
+
+        <div class="status-options">
+            <button class="status-option pending" onclick="updateStatus('pending')">
+                <span class="so-icon">🕐</span>
+                <span class="so-label">Pending</span>
+                <span class="so-hint">Awaiting assignment</span>
+            </button>
+
+            <button class="status-option assigned" onclick="updateStatus('assigned')">
+                <span class="so-icon">🔧</span>
+                <span class="so-label">Assigned</span>
+                <span class="so-hint">Mechanic on the way</span>
+            </button>
+
+            <button class="status-option completed" onclick="updateStatus('completed')">
+                <span class="so-icon">✅</span>
+                <span class="so-label">Completed</span>
+                <span class="so-hint">Service finished</span>
+            </button>
+
+            <button class="status-option cancelled" onclick="updateStatus('cancelled')">
+                <span class="so-icon">❌</span>
+                <span class="so-label">Cancelled</span>
+                <span class="so-hint">Request closed</span>
+            </button>
+        </div>
+
+        <div class="status-modal-footer">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        </div>
     </div>
 </div>
 
 <script src="js/requests.js"></script>
+<script src="js/mobile-nav.js"></script>
 </body>
 </html>

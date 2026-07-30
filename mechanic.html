@@ -10,6 +10,98 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <style>
+  /* ── Vehicle type chip grid ── */
+  .vehicle-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .vtype-chip {
+    display: flex; align-items: center; gap: 0;
+    cursor: pointer; position: relative;
+  }
+  .vtype-chip input[type="checkbox"] {
+    position: absolute; opacity: 0; width: 0; height: 0;
+  }
+  .vtype-chip span {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; padding: 9px 6px;
+    background: var(--bg-glass);
+    border: 1.5px solid var(--border-glass);
+    border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 500; color: var(--text-secondary);
+    transition: var(--transition); text-align: center; gap: 4px;
+    user-select: none;
+  }
+  .vtype-chip input:checked + span {
+    border-color: var(--accent);
+    background: rgba(245,158,11,0.12);
+    color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(245,158,11,0.18);
+  }
+  .vtype-chip:hover span {
+    border-color: rgba(245,158,11,0.4);
+    color: var(--text-primary);
+  }
+
+  /* ── Specialization checkbox panel ── */
+  .spec-checkbox-panel {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    min-height: 56px;
+    display: flex; flex-wrap: wrap; gap: 8px;
+    align-items: flex-start;
+    transition: var(--transition);
+  }
+  .spec-placeholder {
+    font-size: 12px; color: var(--text-muted);
+    margin: auto 0; font-style: italic;
+  }
+  .spec-item {
+    display: flex; align-items: center; gap: 0;
+    cursor: pointer;
+  }
+  .spec-item input[type="checkbox"] {
+    position: absolute; opacity: 0; width: 0; height: 0;
+  }
+  .spec-item {
+    position: relative;
+  }
+  .spec-item span {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 11px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    font-size: 12px; color: var(--text-secondary);
+    transition: var(--transition);
+    user-select: none;
+  }
+  .spec-item input:checked + span {
+    background: rgba(245,158,11,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .spec-item:hover span {
+    border-color: rgba(245,158,11,0.35);
+    color: var(--text-primary);
+  }
+  .spec-category-label {
+    width: 100%; font-size: 10px; font-weight: 700;
+    color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 0.7px; margin-top: 4px; margin-bottom: 2px;
+  }
+  .spec-category-label:first-child { margin-top: 0; }
+
+  @media (max-width: 480px) {
+    .vehicle-type-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  </style>
 </head>
 <body>
 
@@ -61,19 +153,23 @@
                 <input type="text" id="pincode" name="pincode" required placeholder="e.g. 600001" pattern="[0-9]{6}" minlength="6" maxlength="6" inputmode="numeric" title="Please enter a 6-digit pincode">
              </div>
              <div class="form-group">
-                <label for="vehicle_type">Mechanic Type</label>
-                <select id="vehicle_type" name="vehicle_type" required onchange="updateSpecializations()">
-                  <option value="">— Select Mechanic Type —</option>
-                  <option value="Bike">Bike Mechanic</option>
-                  <option value="Car">Car Mechanic</option>
-                  <option value="Both">Both (Bike & Car)</option>
-                </select>
+                <label>Vehicle Types You Service <span style="color:#ef4444">*</span></label>
+                <div class="vehicle-type-grid" id="vehicle-type-grid">
+                  <label class="vtype-chip"><input type="checkbox" name="vehicle_types" value="Bike" onchange="updateSpecializations()"><span>🏍️ Bike</span></label>
+                  <label class="vtype-chip"><input type="checkbox" name="vehicle_types" value="Car" onchange="updateSpecializations()"><span>🚗 Car</span></label>
+                  <label class="vtype-chip"><input type="checkbox" name="vehicle_types" value="Van" onchange="updateSpecializations()"><span>🚐 Van</span></label>
+                  <label class="vtype-chip"><input type="checkbox" name="vehicle_types" value="Truck" onchange="updateSpecializations()"><span>🚚 Truck</span></label>
+                  <label class="vtype-chip"><input type="checkbox" name="vehicle_types" value="Bus" onchange="updateSpecializations()"><span>🚌 Bus</span></label>
+                  <label class="vtype-chip"><input type="checkbox" name="vehicle_types" value="Tractor" onchange="updateSpecializations()"><span>🚜 Tractor</span></label>
+                </div>
+                <p id="vtype-error" style="font-size:11px;color:#ef4444;margin-top:4px;display:none;">Please select at least one vehicle type.</p>
              </div>
              <div class="form-group">
-                <label for="specialization">Specialization</label>
-                <select id="specialization" name="specialization" required disabled>
-                  <option value="">— Select Mechanic Type first —</option>
-                </select>
+                <label>Specializations <span style="color:#ef4444">*</span></label>
+                <div class="spec-checkbox-panel" id="spec-panel">
+                  <p class="spec-placeholder">← Select vehicle types first</p>
+                </div>
+                <p id="spec-error" style="font-size:11px;color:#ef4444;margin-top:4px;display:none;">Please select at least one specialization.</p>
              </div>
            </div>
            
@@ -99,12 +195,23 @@
              <div class="terms-container">
                <h4 style="color:var(--text-secondary); margin-bottom: 8px; font-size:14px;">Terms & Conditions</h4>
                <div class="terms-scrollbox">
-                  <p><strong>1. Eligibility:</strong> You must be 18 years or older to register.</p>
-                  <p><strong>2. Accurate Information:</strong> All submitted details must be factual and kept up to date.</p>
-                  <p><strong>3. Compliance:</strong> Mechanics must comply with all local laws and repair standards.</p>
-                  <p><strong>4. Verification:</strong> The submitted shop image must genuinely represent the operational location.</p>
-                  <p><strong>5. Quality of Service:</strong> Maintain professional conduct and high service quality at all times.</p>
-                  <p><strong>6. Termination:</strong> We reserve the right to suspend accounts for poor service or fraud.</p>
+                  <p><strong>1. Eligibility:</strong> You must be at least 18 years of age and legally authorized to provide vehicle repair or roadside assistance services in your area.</p>
+                  <p><strong>2. Accurate Information:</strong> All information provided during registration, including your name, phone number, workshop details, address, service categories, and business information, must be accurate, complete, and kept up to date.</p>
+                  <p><strong>3. Identity & Shop Verification:</strong> You agree to provide genuine documents, photographs, and shop images when requested. Any false, misleading, or manipulated information may result in immediate suspension or permanent removal from the platform.</p>
+                  <p><strong>4. Service Responsibility:</strong> You are solely responsible for the quality, safety, pricing, and completion of the services you provide to customers.</p>
+                  <p><strong>5. Compliance with Laws:</strong> You must comply with all applicable laws, regulations, environmental requirements, and vehicle repair standards in your jurisdiction.</p>
+                  <p><strong>6. Professional Conduct:</strong> You must treat customers respectfully, communicate honestly, and avoid abusive, discriminatory, or unethical behavior.</p>
+                  <p><strong>7. Pricing Transparency:</strong> Service charges should be communicated clearly to customers before beginning any repair or roadside assistance work. Hidden or unauthorized charges are prohibited.</p>
+                  <p><strong>8. Availability:</strong> If you mark yourself as available, you should respond promptly to customer requests. Repeated failure to respond may affect your account status.</p>
+                  <p><strong>9. Customer Ratings & Reviews:</strong> Customers may rate and review your services. Consistently poor ratings, verified complaints, or misconduct may result in warnings, suspension, or account termination.</p>
+                  <p><strong>10. Fraud Prevention:</strong> Submitting fake service requests, fake reviews, false documents, misleading information, or attempting to deceive customers or the platform is strictly prohibited.</p>
+                  <p><strong>11. Insurance & Licenses:</strong> Where required by law, you are responsible for maintaining valid business licenses, permits, certifications, and insurance.</p>
+                  <p><strong>12. Platform Role:</strong> The platform acts only as a technology service that connects customers with mechanics. We do not supervise or guarantee the work performed by mechanics and are not responsible for disputes regarding workmanship, pricing, delays, or damages.</p>
+                  <p><strong>13. Payments:</strong> If payments are processed through the platform, you agree to the applicable payment terms, commissions, service fees, and payout schedules.</p>
+                  <p><strong>14. Privacy:</strong> You agree that your business information, service areas, contact details, and customer ratings may be displayed to users of the platform in accordance with our Privacy Policy.</p>
+                  <p><strong>15. Account Suspension or Termination:</strong> We reserve the right to suspend or permanently terminate your account without prior notice if you provide false information or fake documents, receive repeated verified customer complaints, engage in fraud or illegal activities, violate these Terms & Conditions, or misuse the platform.</p>
+                  <p><strong>16. Changes to the Terms:</strong> We may update these Terms & Conditions from time to time. Continued use of the platform after changes are published constitutes acceptance of the revised terms.</p>
+                  <p><strong>17. Acceptance:</strong> By registering on this platform, you confirm that you have read, understood, and agreed to these Terms & Conditions.</p>
                </div>
                <div class="checkbox-group" style="margin-top:12px; display:flex; align-items:center; gap:8px;">
                  <input type="checkbox" id="accept-terms" name="accept_terms" required style="width:16px; height:16px; accent-color:var(--accent);">
@@ -196,31 +303,68 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Dynamic Specialization Dropdown
+// ── Multi-select Specializations ─────────────────────────────
 const specOptions = {
-  'Bike': ['General Service', 'Engine Repair', 'Puncture / Tire', 'Electrical Issues'],
-  'Car': ['General Service', 'AC Repair', 'Engine Diagnostics', 'Tire & Wheel', 'Towing', 'Electrical'],
-  'Both': ['General Service', 'Engine Diagnostics', 'Tire & Wheel', 'Electrical', 'Towing']
+  'Bike':    { label: '🏍️ Bike', specs: ['General Service', 'Engine Repair', 'Puncture / Tire', 'Electrical Issues', 'Oil Change'] },
+  'Car':     { label: '🚗 Car',  specs: ['General Service', 'AC Repair', 'Engine Diagnostics', 'Tire & Wheel', 'Towing', 'Electrical', 'Oil Change', 'Suspension'] },
+  'Van':     { label: '🚐 Van',  specs: ['General Service', 'Engine Repair', 'Tire & Wheel', 'Electrical', 'Towing', 'AC Repair'] },
+  'Truck':   { label: '🚚 Truck', specs: ['General Service', 'Engine Overhaul', 'Tire & Wheel', 'Towing', 'Brake Repair', 'Electrical', 'Hydraulics'] },
+  'Bus':     { label: '🚌 Bus',  specs: ['General Service', 'Engine Overhaul', 'Brake Repair', 'Tire & Wheel', 'Electrical', 'AC Repair', 'Towing'] },
+  'Tractor': { label: '🚜 Tractor', specs: ['General Service', 'Engine Repair', 'Hydraulics', 'Tire & Wheel', 'Electrical', 'PTO Repair'] }
 };
 
 function updateSpecializations() {
-  const vType = document.getElementById('vehicle_type').value;
-  const specSelect = document.getElementById('specialization');
-  
-  specSelect.innerHTML = '<option value="">— Select Specialization —</option>';
-  
-  if (vType && specOptions[vType]) {
-    specSelect.disabled = false;
-    specOptions[vType].forEach(opt => {
-      const option = document.createElement('option');
-      option.value = opt;
-      option.textContent = opt;
-      specSelect.appendChild(option);
-    });
-  } else {
-    specSelect.disabled = true;
-    specSelect.innerHTML = '<option value="">— Select Mechanic Type first —</option>';
+  // Collect checked vehicle types
+  const checkedTypes = Array.from(
+    document.querySelectorAll('input[name="vehicle_types"]:checked')
+  ).map(cb => cb.value);
+
+  const panel = document.getElementById('spec-panel');
+
+  if (checkedTypes.length === 0) {
+    panel.innerHTML = '<p class="spec-placeholder">← Select vehicle types first</p>';
+    return;
   }
+
+  // Build union of specs, grouped by vehicle type
+  // Keep already-checked specs checked
+  const prevChecked = new Set(
+    Array.from(document.querySelectorAll('.spec-item input:checked')).map(cb => cb.value)
+  );
+
+  panel.innerHTML = '';
+  const allSpecsSeen = new Set();
+
+  checkedTypes.forEach(vType => {
+    const group = specOptions[vType];
+    if (!group) return;
+
+    const label = document.createElement('div');
+    label.className = 'spec-category-label';
+    label.textContent = group.label;
+    panel.appendChild(label);
+
+    group.specs.forEach(spec => {
+      if (allSpecsSeen.has(spec + '_' + vType)) return;
+      allSpecsSeen.add(spec + '_' + vType);
+
+      const item = document.createElement('label');
+      item.className = 'spec-item';
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.name = 'specializations';
+      cb.value = spec;
+      if (prevChecked.has(spec)) cb.checked = true;
+
+      const tag = document.createElement('span');
+      tag.textContent = spec;
+
+      item.appendChild(cb);
+      item.appendChild(tag);
+      panel.appendChild(item);
+    });
+  });
 }
 
 function handleMechImageUpload(input) {
@@ -281,12 +425,47 @@ function handleMechImageUpload(input) {
 
 async function submitMechanicForm(e) {
   e.preventDefault();
-  
+
+  // ── Validate vehicle types ──────────────────────────────────
+  const checkedVTypes = Array.from(
+    document.querySelectorAll('input[name="vehicle_types"]:checked')
+  ).map(cb => cb.value);
+
+  if (checkedVTypes.length === 0) {
+    document.getElementById('vtype-error').style.display = 'block';
+    document.getElementById('vehicle-type-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  } else {
+    document.getElementById('vtype-error').style.display = 'none';
+  }
+
+  // ── Validate specializations ────────────────────────────────
+  const checkedSpecs = Array.from(
+    document.querySelectorAll('.spec-item input:checked')
+  ).map(cb => cb.value);
+
+  if (checkedSpecs.length === 0) {
+    document.getElementById('spec-error').style.display = 'block';
+    document.getElementById('spec-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  } else {
+    document.getElementById('spec-error').style.display = 'none';
+  }
+
   const submitBtn = document.getElementById('btn-mech-submit');
   submitBtn.classList.add('loading');
   submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
   
   const formData = new FormData(e.target);
+
+  // ── Override vehicle_type and specialization with multi-select values ──
+  // Remove any pre-existing entries (FormData may not have them since we removed the selects)
+  formData.delete('vehicle_type');
+  formData.delete('specialization');
+
+  // Send as joined strings (backend-compatible)
+  formData.append('vehicle_type', checkedVTypes.join(', '));
+  formData.append('specialization', checkedSpecs.join(', '));
 
   const apiBase = (window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1'))
     ? 'http://localhost:5000'
@@ -309,11 +488,7 @@ async function submitMechanicForm(e) {
     }
   } catch (error) {
     console.error("Error:", error);
-    // Even if it fails (e.g. no DB connection), for demo purposes let's just show success
-    // In real app, uncomment the alert:
-    // alert("Server error. Please check your connection or ensure MongoDB is running.");
-    
-    // DEMO OVERRIDE: Show success state even if backend fails (since user knows DB is down)
+    // DEMO OVERRIDE: Show success state even if backend fails
     document.getElementById('mechanic-form').style.display = 'none';
     document.getElementById('mechanic-success').classList.add('active');
   }

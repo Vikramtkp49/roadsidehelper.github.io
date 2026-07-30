@@ -152,6 +152,10 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
+const server = app.listen(PORT, () => {
+    console.log(`✅ Server running on port ${PORT}`);
+});
+
 // ✅ Graceful shutdown
 process.on('SIGINT', async () => {
     console.log('\n🛑 Shutting down server...');
@@ -162,6 +166,3 @@ process.on('SIGINT', async () => {
     });
 });
 
-const server = app.listen(PORT, () => {
-    console.log(`✅ Server running on port ${PORT}`);
-});

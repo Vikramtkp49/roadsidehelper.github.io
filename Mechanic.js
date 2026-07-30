@@ -50,20 +50,23 @@ const mechanicSchema = new mongoose.Schema({
             max: 180
         }
     },
-    vehicle_type: { 
-        type: String, 
-        required: true,
-        enum: ['Bike', 'Car', 'Both', 'Load Van'] // Updated enum to match current choices
-    },
-    specialization: { 
-        type: String, 
+
+    // ── vehicle_type: stored as Array ['Bike','Van'] OR legacy string 'Bike'/'Both' ──
+    vehicle_type: {
+        type: mongoose.Schema.Types.Mixed,
         required: true
     },
+
+    // ── specialization: stored as Array ['General Service','Towing'] OR legacy string ──
+    specialization: {
+        type: mongoose.Schema.Types.Mixed,
+        required: true
+    },
+
     shop_image: { 
         type: [String], 
         required: true
     },
-    // New security fields
     isVerified: {
         type: Boolean,
         default: false
@@ -77,10 +80,9 @@ const mechanicSchema = new mongoose.Schema({
         default: false
     },
     blockedReason: String,
-    // Ratings and reviews
     rating: {
         type: Number,
-        default: 0,
+        default: 5.0,
         min: 0,
         max: 5
     },
@@ -97,18 +99,17 @@ const mechanicSchema = new mongoose.Schema({
         default: 1,
         min: 0
     },
-    // Insurance and certification
     insuranceCertificate: String,
     certifications: [String],
     licenseNumber: {
         type: String,
         unique: true,
-        sparse: true, // Allow multiple nulls if not provided during MVP
-        select: false // Only for admins
+        sparse: true,
+        select: false
     },
     aadharLastDigits: {
         type: String,
-        select: false // Only for admins
+        select: false
     },
     backgroundCheckStatus: {
         type: String,
@@ -133,16 +134,29 @@ const mechanicSchema = new mongoose.Schema({
     lastLoginAt: Date
 });
 
-// Compound indexes for performance
+// ── Indexes (NO compound index on vehicle_type + specialization —
+//    both can be arrays and MongoDB forbids indexing two parallel arrays) ──
 mechanicSchema.index({ email: 1, isBlocked: 1 });
 mechanicSchema.index({ 'location.latitude': 1, 'location.longitude': 1 });
-mechanicSchema.index({ vehicle_type: 1, specialization: 1 });
 mechanicSchema.index({ createdAt: -1 });
+// Index each array field separately (single-field array indexes are fine)
+mechanicSchema.index({ vehicle_type: 1 });
+mechanicSchema.index({ specialization: 1 });
+
+// ── Static helper: normalise Mixed field to a clean string array ──
+function toArray(val) {
+    if (!val) return [];
+    if (Array.isArray(val)) return val.map(s => String(s).trim()).filter(Boolean);
+    if (val === 'Both') return ['Bike', 'Car'];
+    if (val === 'Load Van') return ['Van'];
+    return String(val).split(',').map(s => s.trim()).filter(Boolean);
+}
+
+mechanicSchema.statics.toArray = toArray;
 
 // Hash password before saving
 mechanicSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
-    
     try {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
@@ -152,12 +166,10 @@ mechanicSchema.pre('save', async function(next) {
     }
 });
 
-// Compare password method
 mechanicSchema.methods.comparePassword = async function(candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Remove sensitive fields from JSON
 mechanicSchema.methods.toJSON = function() {
     const obj = this.toObject();
     delete obj.password;

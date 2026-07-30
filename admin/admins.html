@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Management — Roadside Helper</title>
+    <link rel="icon" type="image/png" href="../logo.png">
+    <meta name="description" content="Manage administrative user accounts, roles, and permissions.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<!-- Toast Container -->
+<div id="toast-container" class="toast-container"></div>
+
+<div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <span class="logo-icon">RH</span>
+            <span class="logo-text">Roadside Helper</span>
+        </div>
+        <nav>
+            <a href="dashboard.html" class="nav-item"><span class="icon">📊</span><span class="nav-label">Dashboard</span></a>
+            <a href="requests.html" class="nav-item"><span class="icon">📋</span><span class="nav-label">Requests</span></a>
+            <a href="mechanics.html" class="nav-item"><span class="icon">👨‍🔧</span><span class="nav-label">Mechanics</span></a>
+            <a href="analytics.html" class="nav-item"><span class="icon">📈</span><span class="nav-label">Analytics</span></a>
+            <a href="admins.html" class="nav-item active"><span class="icon">🛡️</span><span class="nav-label">Admins</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <img id="sidebar-avatar" src="https://ui-avatars.com/api/?name=Admin&background=5D0D18&color=fff&size=64" alt="Admin">
+                <div class="sidebar-user-info">
+                    <span id="sidebar-name" class="sidebar-user-name">Admin</span>
+                    <span id="sidebar-role" class="sidebar-user-role">Super Admin</span>
+                </div>
+            </div>
+            <button onclick="logout()" class="logout-btn">
+                <span>↩</span> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <h1>Admin Management</h1>
+                <p class="header-subtitle">Manage team access, roles, and permissions</p>
+            </div>
+            <div class="header-right">
+                <span id="current-time" class="header-time"></span>
+                <div class="user-menu">
+                    <div class="user-menu-info">
+                        <span id="admin-name" class="user-menu-name">Admin</span>
+                        <span id="admin-role" class="user-menu-role">Super Admin</span>
+                    </div>
+                    <img id="header-avatar" src="https://ui-avatars.com/api/?name=Admin&background=5D0D18&color=fff&size=64" alt="Admin">
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <!-- KPI Cards -->
+            <div class="kpi-grid admin-kpi">
+                <div class="kpi-card kpi-admin-total">
+                    <div class="kpi-header">
+                        <h3>Total Admins</h3>
+                        <span class="kpi-icon">👥</span>
+                    </div>
+                    <p class="kpi-value" id="kpi-total">0</p>
+                    <p class="kpi-change"></p>
+                </div>
+                <div class="kpi-card kpi-admin-active">
+                    <div class="kpi-header">
+                        <h3>Active</h3>
+                        <span class="kpi-icon">✅</span>
+                    </div>
+                    <p class="kpi-value" id="kpi-active">0</p>
+                    <p class="kpi-change" id="kpi-active-pct">0% of total</p>
+                </div>
+                <div class="kpi-card kpi-admin-super">
+                    <div class="kpi-header">
+                        <h3>Super Admins</h3>
+                        <span class="kpi-icon">🛡️</span>
+                    </div>
+                    <p class="kpi-value" id="kpi-super">0</p>
+                    <p class="kpi-change"></p>
+                </div>
+                <div class="kpi-card kpi-admin-recent">
+                    <div class="kpi-header">
+                        <h3>This Week</h3>
+                        <span class="kpi-icon">📅</span>
+                    </div>
+                    <p class="kpi-value" id="kpi-recent">0</p>
+                    <p class="kpi-change"></p>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Search by name, email or role..." oninput="debounceSearch()">
+                        <button class="search-clear" id="searchClear" onclick="clearSearch()" style="display:none;">✕</button>
+                    </div>
+                    <div class="filter-dropdown">
+                        <button class="filter-dropdown-btn" onclick="toggleFilterDropdown()">
+                            <span>⚙️</span> Filters
+                        </button>
+                        <div class="filter-dropdown-menu" id="filterDropdown">
+                            <div class="filter-group">
+                                <label>Role</label>
+                                <div class="filter-chips" id="roleFilters">
+                                    <button class="filter-chip active" data-filter="role" data-value="all">All</button>
+                                    <button class="filter-chip" data-filter="role" data-value="super_admin">Super Admin</button>
+                                    <button class="filter-chip" data-filter="role" data-value="admin">Admin</button>
+                                    <button class="filter-chip" data-filter="role" data-value="moderator">Moderator</button>
+                                    <button class="filter-chip" data-filter="role" data-value="support">Support</button>
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <label>Status</label>
+                                <div class="filter-chips" id="statusFilters">
+                                    <button class="filter-chip active" data-filter="status" data-value="all">All</button>
+                                    <button class="filter-chip" data-filter="status" data-value="active">Active</button>
+                                    <button class="filter-chip" data-filter="status" data-value="inactive">Inactive</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar-right">
+                    <button class="btn-export" onclick="exportToCSV()">
+                        <span>📥</span> Export
+                    </button>
+                    <button class="action-btn btn-primary" onclick="openCreateModal()">
+                        <span>➕</span> Add Admin
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bulk Action Bar -->
+            <div class="bulk-bar" id="bulkBar" style="display:none;">
+                <div class="bulk-bar-left">
+                    <input type="checkbox" id="bulkSelectAll" onchange="toggleSelectAll()">
+                    <span id="bulkCount">0 selected</span>
+                </div>
+                <div class="bulk-bar-right">
+                    <button class="bulk-btn bulk-activate" onclick="bulkActivate()">Activate</button>
+                    <button class="bulk-btn bulk-deactivate" onclick="bulkDeactivate()">Deactivate</button>
+                    <button class="bulk-btn bulk-delete" onclick="bulkDelete()">Delete</button>
+                </div>
+            </div>
+
+            <!-- Admins Table -->
+            <div class="section admin-table-section">
+                <div class="table-header">
+                    <h3>Administrators <span id="total-label" class="count-badge">0</span></h3>
+                    <div class="table-header-right">
+                        <span class="sort-label">Sort by:</span>
+                        <select class="sort-select" id="sortSelect" onchange="handleSort()">
+                            <option value="createdAt-desc">Newest First</option>
+                            <option value="createdAt-asc">Oldest First</option>
+                            <option value="name-asc">Name A-Z</option>
+                            <option value="name-desc">Name Z-A</option>
+                            <option value="role-asc">Role</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table admin-table">
+                        <thead>
+                            <tr>
+                                <th class="col-select"><input type="checkbox" id="selectAllHeader" onchange="toggleSelectAll()"></th>
+                                <th class="col-admin">Admin</th>
+                                <th class="col-role">Role</th>
+                                <th class="col-perms">Permissions</th>
+                                <th class="col-status">Status</th>
+                                <th class="col-created">Created</th>
+                                <th class="col-actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admins-tbody">
+                            <tr><td colspan="7" class="loading-row"><div class="spinner"></div> Loading administrators...</td></tr>
+                        </tbody>
+                    </table>
+                    <!-- Empty State -->
+                    <div class="empty-state" id="emptyState" style="display:none;">
+                        <div class="empty-icon">👤</div>
+                        <h4>No administrators found</h4>
+                        <p>Try adjusting your search or filters, or add a new admin account.</p>
+                        <button class="action-btn btn-primary" onclick="openCreateModal()">Add Admin</button>
+                    </div>
+                </div>
+                <!-- Pagination -->
+                <div class="pagination-bar">
+                    <span class="pagination-info" id="paginationInfo">Showing 0 of 0</span>
+                    <div class="pagination" id="pagination"></div>
+                    <div class="page-size">
+                        <span>Rows:</span>
+                        <select id="pageSize" onchange="handlePageSizeChange()">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Admin Detail Modal -->
+<div id="detailModal" class="modal-overlay" style="display:none">
+    <div class="modal-card modal-detail">
+        <div class="modal-detail-header">
+            <div class="modal-detail-avatar" id="detailAvatar"></div>
+            <div class="modal-detail-info">
+                <h3 id="detailName">Admin Name</h3>
+                <span id="detailRole" class="role-badge">Admin</span>
+                <span id="detailStatus" class="badge">Active</span>
+            </div>
+            <button class="modal-close-x" onclick="closeDetailModal()">✕</button>
+        </div>
+        <div class="modal-detail-body">
+            <div class="detail-section">
+                <h4>Contact Information</h4>
+                <div class="detail-row">
+                    <span>Email</span>
+                    <span id="detailEmail">—</span>
+                </div>
+                <div class="detail-row">
+                    <span>Account ID</span>
+                    <span id="detailId" class="id-cell">—</span>
+                </div>
+            </div>
+            <div class="detail-section">
+                <h4>Permissions</h4>
+                <div class="detail-perms" id="detailPerms"></div>
+            </div>
+            <div class="detail-section">
+                <h4>Account Details</h4>
+                <div class="detail-row">
+                    <span>Created</span>
+                    <span id="detailCreated">—</span>
+                </div>
+                <div class="detail-row">
+                    <span>Last Updated</span>
+                    <span id="detailUpdated">—</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-detail-actions">
+            <button class="btn-secondary" onclick="closeDetailModal()">Close</button>
+            <button class="action-btn btn-primary" id="detailEditBtn" onclick="editFromDetail()">Edit Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Edit/Create Modal -->
+<div id="adminModal" class="modal-overlay" style="display:none">
+    <div class="modal-card modal-wide">
+        <div class="modal-header">
+            <h3 id="modal-title">Create Admin Account</h3>
+            <button class="modal-close-x" onclick="closeAdminModal()">✕</button>
+        </div>
+        <form id="adminForm" onsubmit="handleFormSubmit(event)" autocomplete="off">
+            <input type="hidden" id="formAdminId">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="formName">Full Name <span class="required">*</span></label>
+                    <input type="text" id="formName" required autocomplete="off" placeholder="e.g. John Smith">
+                </div>
+                <div class="form-group">
+                    <label for="formEmail">Email Address <span class="required">*</span></label>
+                    <input type="email" id="formEmail" required autocomplete="off" placeholder="admin@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="formPassword">Password <span id="pwd-hint">(Minimum 8 characters)</span></label>
+                    <div class="password-field">
+                        <input type="password" id="formPassword" autocomplete="new-password" placeholder="Enter password">
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility()">👁️</button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                        <span class="strength-text" id="strengthText"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="formRole">Access Role <span class="required">*</span></label>
+                    <select id="formRole" required onchange="handleRoleChange()">
+                        <option value="admin">Admin</option>
+                        <option value="super_admin">Super Admin</option>
+                        
+                    </select>
+                    <p class="form-hint" id="roleHint">Standard admin with custom permissions.</p>
+                </div>
+                <div class="form-group">
+                    <label>Account Status</label>
+                    <div class="toggle-switch-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="formActive" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label" id="toggleLabel">Active</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="permissions-section" id="permissionsSection">
+                <label class="permissions-label">Custom Permissions</label>
+                <p class="permissions-hint">Select what this admin can access and manage.</p>
+                <div class="permission-grid">
+                    <label class="permission-item">
+                        <input type="checkbox" value="view_requests" name="perms">
+                        <span class="perm-check"></span>
+                        <span class="perm-text">
+                            <strong>View Requests</strong>
+                            <small>See all service requests</small>
+                        </span>
+                    </label>
+                    <label class="permission-item">
+                        <input type="checkbox" value="edit_requests" name="perms">
+                        <span class="perm-check"></span>
+                        <span class="perm-text">
+                            <strong>Edit Requests</strong>
+                            <small>Modify request status & details</small>
+                        </span>
+                    </label>
+                    <label class="permission-item">
+                        <input type="checkbox" value="approve_mechanics" name="perms">
+                        <span class="perm-check"></span>
+                        <span class="perm-text">
+                            <strong>Approve Mechanics</strong>
+                            <small>Verify and approve mechanic accounts</small>
+                        </span>
+                    </label>
+                    <label class="permission-item">
+                        <input type="checkbox" value="block_mechanics" name="perms">
+                        <span class="perm-check"></span>
+                        <span class="perm-text">
+                            <strong>Block Mechanics</strong>
+                            <small>Suspend or ban mechanic accounts</small>
+                        </span>
+                    </label>
+                    <label class="permission-item">
+                        <input type="checkbox" value="view_analytics" name="perms">
+                        <span class="perm-check"></span>
+                        <span class="perm-text">
+                            <strong>View Analytics</strong>
+                            <small>Access dashboards and reports</small>
+                        </span>
+                    </label>
+                    <label class="permission-item">
+                        <input type="checkbox" value="manage_admins" name="perms">
+                        <span class="perm-check"></span>
+                        <span class="perm-text">
+                            <strong>Manage Admins</strong>
+                            <small>Create and edit admin accounts</small>
+                        </span>
+                    </label>
+                    <label class="permission-item">
+                        <input type="checkbox" value="manage_settings" name="perms">
+                        <span class="perm-check"></span>
+                        <span class="perm-text">
+                            <strong>Manage Settings</strong>
+                            <small>Configure platform settings</small>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="modalError" class="modal-error" style="display:none;"></div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeAdminModal()">Cancel</button>
+                <button type="submit" class="action-btn btn-primary" id="submitBtn">
+                    <span class="btn-spinner" style="display:none;"><div class="spinner spinner-sm"></div></span>
+                    <span class="btn-text">Save Account</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div id="confirmModal" class="modal-overlay" style="display:none">
+    <div class="modal-card modal-confirm">
+        <div class="confirm-icon" id="confirmIcon">⚠️</div>
+        <h3 id="confirmTitle">Are you sure?</h3>
+        <p id="confirmMessage">This action cannot be undone.</p>
+        <div class="modal-actions confirm-actions">
+            <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+            <button class="action-btn" id="confirmBtn" onclick="executeConfirm()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/admins.js"></script>
+<script src="js/mobile-nav.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4655f3c58dd6497fb7ddb85b68480db7"}' crossorigin="anonymous"></script>
+</body>
+</html>

@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analytics — Roadside Helper Admin</title>
+    <link rel="icon" type="image/png" href="../logo.png">
     <meta name="description" content="View detailed analytics and trends for the Roadside Helper platform.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 <body>
@@ -18,6 +20,7 @@
             <a href="requests.html" class="nav-item"><span class="icon">📋</span> Requests</a>
             <a href="mechanics.html" class="nav-item"><span class="icon">👨‍🔧</span> Mechanics</a>
             <a href="analytics.html" class="nav-item active"><span class="icon">📈</span> Analytics</a>
+            <a href="admins.html" class="nav-item"><span class="icon">🛡️</span> Admins</a>
         </nav>
         <div class="sidebar-footer">
             <button onclick="logout()" class="logout-btn">Logout</button>
@@ -39,10 +42,10 @@
         <section class="content">
             <!-- KPI Summary Row -->
             <div class="kpi-grid" id="kpi-row">
-                <div class="kpi-card"><div class="kpi-header"><h3>Total Requests</h3><span>📋</span></div><p class="kpi-value" id="a-total">...</p><p class="kpi-change">All time</p></div>
-                <div class="kpi-card"><div class="kpi-header"><h3>Completed</h3><span>✅</span></div><p class="kpi-value" id="a-completed">...</p><p class="kpi-change">Successfully resolved</p></div>
-                <div class="kpi-card"><div class="kpi-header"><h3>Pending</h3><span>🕐</span></div><p class="kpi-value" id="a-pending">...</p><p class="kpi-change">Awaiting assignment</p></div>
-                <div class="kpi-card"><div class="kpi-header"><h3>Active Mechanics</h3><span>👨‍🔧</span></div><p class="kpi-value" id="a-mechanics">...</p><p class="kpi-change">Approved & ready</p></div>
+                <div class="kpi-card"><div class="kpi-header"><h3>Total Requests</h3><span>📋</span></div><p class="kpi-value" id="a-total">...</p><p class="kpi-change"></p></div>
+                <div class="kpi-card"><div class="kpi-header"><h3>Completed</h3><span>✅</span></div><p class="kpi-value" id="a-completed">...</p><p class="kpi-change"></p></div>
+                <div class="kpi-card"><div class="kpi-header"><h3>Pending</h3><span>🕐</span></div><p class="kpi-value" id="a-pending">...</p><p class="kpi-change"></p></div>
+                <div class="kpi-card"><div class="kpi-header"><h3>Active Mechanics</h3><span>👨‍🔧</span></div><p class="kpi-value" id="a-mechanics">...</p><p class="kpi-change"></p></div>
             </div>
 
             <!-- Charts Row 1 -->
@@ -73,5 +76,6 @@
 </div>
 
 <script src="js/analytics.js"></script>
+<script src="js/mobile-nav.js"></script>
 </body>
 </html>

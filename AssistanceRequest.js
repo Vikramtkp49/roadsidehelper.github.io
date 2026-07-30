@@ -9,10 +9,10 @@ const assistanceRequestSchema = new mongoose.Schema({
         maxlength: 100
     },
     phone: { 
-        type: String,  // ✅ FIX: Changed from 'number' to 'String'
+        type: String,
         required: true,
         trim: true,
-        match: /^[0-9]{10}$/  // Add phone validation regex for exactly 10 digits
+        match: /^[0-9]{10}$/
     },
     location: {
         latitude: { 
@@ -26,12 +26,21 @@ const assistanceRequestSchema = new mongoose.Schema({
             required: true,
             min: -180,
             max: 180
+        },
+        pincode: {
+            type: String,
+            default: null   // populated via reverse-geocode after save
+        },
+        city: {
+            type: String,
+            default: null   // populated via reverse-geocode after save
         }
+
     },
     vehicle: { 
         type: String, 
         required: true,
-        enum: ['Bike', 'Car', 'Load Van']  // Restrict to valid options
+        enum: ['Bike', 'Car', 'Van', 'Truck', 'Bus', 'Tractor']
     },
     needs: { 
         type: String,
@@ -48,18 +57,34 @@ const assistanceRequestSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['pending', 'assigned', 'completed', 'cancelled'],
-        default: 'pending'  // Add status tracking
+        default: 'pending'
     },
+    // ── AUTO-MATCH FIELDS ──────────────────────────────────────
+    assignedMechanic: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Mechanic',
+        default: null
+    },
+    matchMethod: {
+        // 'pincode_exact' | 'radius_15km' | 'none'
+        type: String,
+        default: 'none'
+    },
+    matchedAt: {
+        type: Date,
+        default: null
+    },
+    // ──────────────────────────────────────────────────────────
     createdAt: { 
         type: Date, 
         default: Date.now,
-        index: true  // Add index for queries
+        index: true
     }
 });
 
-// Add indexes for better query performance
 assistanceRequestSchema.index({ createdAt: -1 });
 assistanceRequestSchema.index({ status: 1 });
 assistanceRequestSchema.index({ 'location.latitude': 1, 'location.longitude': 1 });
+assistanceRequestSchema.index({ assignedMechanic: 1 });
 
 module.exports = mongoose.model('AssistanceRequest', assistanceRequestSchema);

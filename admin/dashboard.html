@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Roadside Helper</title>
+    <link rel="icon" type="image/png" href="../logo.png">
     <meta name="description" content="Admin dashboard for managing the Roadside Helper platform.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 <body>
@@ -26,6 +28,9 @@
             </a>
             <a href="analytics.html" class="nav-item">
                 <span class="icon">📈</span> Analytics
+            </a>
+            <a href="admins.html" class="nav-item">
+                <span class="icon">🛡️</span> Admins
             </a>
         </nav>
         <div class="sidebar-footer">
@@ -52,39 +57,46 @@
             <!-- KPI Cards -->
             <div class="kpi-grid">
                 <div class="kpi-card">
-                    <div class="kpi-header">
+                    <div class="kpi-left">
                         <h3>Today's Requests</h3>
-                        <span class="icon">📋</span>
+                        <span class="icon"></span>
                     </div>
-                    <p class="kpi-value" id="today-requests">...</p>
-                    <p class="kpi-change">Active today</p>
+                    <div class="kpi-right">
+                        <span class="kpi-value" id="today-requests">...</span>
+                       
+                    </div>
                 </div>
 
                 <div class="kpi-card">
-                    <div class="kpi-header">
+                    <div class="kpi-left">
                         <h3>Total Mechanics</h3>
-                        <span class="icon">👨‍🔧</span>
+                        <span class="icon"></span>
                     </div>
-                    <p class="kpi-value" id="total-mechanics">...</p>
-                    <p class="kpi-change"><span id="pending-mechanics">...</span> pending approval</p>
+                    <div class="kpi-right">
+                        <span class="kpi-value" id="total-mechanics">...</span>
+                    </div>
                 </div>
 
                 <div class="kpi-card">
-                    <div class="kpi-header">
+                    <div class="kpi-left">
                         <h3>Total Requests</h3>
-                        <span class="icon">✅</span>
+                        <span class="icon"></span>
                     </div>
-                    <p class="kpi-value" id="total-requests">...</p>
-                    <p class="kpi-change">All time</p>
+                    <div class="kpi-right">
+                        <span class="kpi-value" id="total-requests">...</span>
+                        <span class="kpi-change"></span>
+                    </div>
                 </div>
 
                 <div class="kpi-card">
-                    <div class="kpi-header">
-                        <h3>Month Requests</h3>
-                        <span class="icon">📅</span>
+                    <div class="kpi-left">
+                        <h3>Month<br>Requests</h3>
+                        <span class="icon"></span>
                     </div>
-                    <p class="kpi-value" id="month-requests">...</p>
-                    <p class="kpi-change">This month</p>
+                    <div class="kpi-right">
+                        <span class="kpi-value" id="month-requests">...</span>
+                        <span class="kpi-change"></span>
+                    </div>
                 </div>
             </div>
 
@@ -103,26 +115,42 @@
             <!-- Recent Requests Table -->
             <div class="section">
                 <h3>Recent Requests</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Vehicle</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="requests-tbody">
-                        <tr><td colspan="6" class="loading-row"><div class="spinner"></div> Loading requests...</td></tr>
-                    </tbody>
-                </table>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Vehicle</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requests-tbody">
+                            <tr><td colspan="6" class="loading-row"><div class="spinner"></div> Loading requests...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
     </main>
 </div>
 
+<!-- ── Request Detail Modal ────────────────────────────────────── -->
+<div id="requestDetailModal" class="modal-overlay" style="display:none;">
+    <div class="modal-card" style="max-width:520px; width:100%;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3 style="font-size:1.05rem; font-weight:700; color:var(--brand-primary);">Request Details</h3>
+            <span id="req-modal-badge" class="badge"></span>
+        </div>
+        <hr style="border:0; border-top:1px solid var(--border-color); margin-bottom:18px;">
+        <div id="req-modal-details" style="display:flex; flex-direction:column; gap:10px;"></div>
+        <button class="modal-close" onclick="closeRequestModal()" style="margin-top:20px;">Close</button>
+    </div>
+</div>
+
 <script src="js/dashboard.js"></script>
+<script src="js/mobile-nav.js"></script>
 </body>
 </html>
