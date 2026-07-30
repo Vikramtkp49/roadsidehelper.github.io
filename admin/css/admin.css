@@ -2240,20 +2240,20 @@ body {
     }
 
     .admin-header {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-        margin-bottom: 20px;
-        padding-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
     }
 
     .header-left h1 {
-        font-size: 1.4rem;
+        font-size: 1.35rem;
+        margin-bottom: 2px;
     }
 
     .header-right {
-        width: 100%;
-        justify-content: space-between;
+        display: none;
     }
 
     .toolbar {

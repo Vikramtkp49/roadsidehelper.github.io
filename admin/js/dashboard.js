@@ -187,7 +187,6 @@ async function loadCharts(data) {
 }
 
 function openRequestModal(id) {
-<<<<<<< HEAD
     try {
         const req = window._dashRequests && window._dashRequests[id];
         if (!req) return;
@@ -255,40 +254,6 @@ function closeRequestModal() {
     if (modal) {
         modal.style.display = 'none';
     }
-=======
-    const req = window._dashRequests && window._dashRequests[id];
-    if (!req) return;
-
-    // Badge
-    const badge = document.getElementById('req-modal-badge');
-    badge.className = `badge badge-${req.status.toLowerCase()}`;
-    badge.textContent = req.status.charAt(0).toUpperCase() + req.status.slice(1);
-
-    // Detail rows
-    const details = [
-        ['🆔 Request ID',  req._id],
-        ['👤 Customer',    req.name],
-        ['📞 Phone',       req.phone || '—'],
-        ['🚗 Vehicle',     `${req.vehicle}${req.vehicleModel ? ' — ' + req.vehicleModel : ''}`],
-        ['🔧 Problem',     req.problem || '—'],
-        ['📍 Location',    req.location?.address ? `${req.location.address}, ${req.location.city || ''}` : (req.location?.city || '—')],
-        ['📅 Created',     new Date(req.createdAt).toLocaleString()],
-        ['👨‍🔧 Assigned To', req.mechanic ? (req.mechanic.name || req.mechanic) : 'Not assigned yet'],
-    ];
-
-    document.getElementById('req-modal-details').innerHTML = details.map(([label, value]) => `
-        <div class="detail-row">
-            <span>${label}</span>
-            <span style="font-weight:500; max-width:60%; text-align:right; word-break:break-word;">${value}</span>
-        </div>
-    `).join('');
-
-    document.getElementById('requestDetailModal').style.display = 'flex';
-}
-
-function closeRequestModal() {
-    document.getElementById('requestDetailModal').style.display = 'none';
->>>>>>> 9783469a04ad398d022258452cd3ea3082543e89
 }
 
 function logout() {
