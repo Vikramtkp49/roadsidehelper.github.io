@@ -219,11 +219,11 @@ function openRequestModal(id) {
 
         // Detail rows
         const details = [
-            ['🆔 Request ID',  req._id],
-            ['👤 Customer',    req.name],
+            ['🆔 Request ID',  `<code class="req-id-pill">${req._id}</code>`],
+            ['👤 Customer',    `<strong>${req.name}</strong>`],
             ['📞 Phone',       req.phone || '—'],
-            ['🚗 Vehicle',     `${req.vehicle}${req.vehicleModel ? ' — ' + req.vehicleModel : ''}`],
-            ['🔧 Problem',     req.problem || '—'],
+            ['🚗 Vehicle',     `${req.vehicle}${req.vehicleModel ? ' (' + req.vehicleModel + ')' : ''}`],
+            ['🔧 Problem',     req.problem || 'No details provided'],
             ['📍 Location',    locText],
             ['📅 Created',     req.createdAt ? new Date(req.createdAt).toLocaleString() : '—'],
             ['👨‍🔧 Assigned To', mechanicText],
